@@ -1,0 +1,131 @@
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ---------- Virtual environments ----------
+.venv/
+venv/
+env/
+ENV/
+.env/
+site-packages/
+ite-packages
+pyvenv.cfg
+Scripts/
+Include/
+
+# ---------- Environment & secrets ----------
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets.json
+instance/
+config.local.py
+
+# ---------- Database (runtime data) ----------
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# ---------- Face embeddings / models (binary artifacts) ----------
+data/*.pkl
+data/faces.pkl
+*.pkl
+*.npy
+*.dat
+models/
+encodings/
+
+# ---------- Dataset & uploads (تصاویر افراد) ----------
+dataset/
+uploads/
+captures/
+known_faces/
+data/images/
+*.jpg
+*.jpeg
+*.png
+!static/**/*.png
+!static/**/*.jpg
+!static/**/*.svg
+
+# ---------- Logs ----------
+logs/
+*.log
+log/
+data/logs/
+
+# ---------- Exports / reports ----------
+exports/
+reports/
+*.csv
+*.xlsx
+*.xls
+attendance_export*.*
+
+# ---------- Flask ----------
+flask_session/
+.webassets-cache
+instance/
+
+# ---------- Testing / coverage ----------
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+.dmypy.json
+
+# ---------- IDE / Editor ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-workspace
+*.sublime-project
+
+# ---------- OS ----------
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ---------- Docker ----------
+.dockerignore.local
+docker-compose.override.yml
+
+# ---------- Misc / project scratch ----------
+*.bak
+*.tmp
+*.orig

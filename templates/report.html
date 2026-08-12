@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#07111f">
+    <title>گزارش تردد | حضور هوشمند</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    <style>
+        .report-page {
+            padding-bottom: 45px
+        }
+
+        .report-main {
+            padding-top: 31px
+        }
+
+        .page-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 25px
+        }
+
+        .page-heading .section-title {
+            margin: 9px 0 4px
+        }
+
+        .page-meta {
+            color: var(--text-muted);
+            font-size: .75rem
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns:repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 18px
+        }
+
+        .stat-card {
+            border-radius: 20px;
+            padding: 19px;
+            display: flex;
+            align-items: center;
+            gap: 15px
+        }
+
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: var(--primary-soft);
+            color: var(--primary);
+            flex: 0 0 auto
+        }
+
+        .stat-icon svg {
+            width: 21px
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background: var(--success-soft);
+            color: var(--success)
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+            background: var(--danger-soft);
+            color: var(--danger)
+        }
+
+        .stat-card:nth-child(4) .stat-icon {
+            background: rgba(213, 180, 111, .11);
+            color: var(--gold)
+        }
+
+        .stat-label {
+            font-size: .7rem;
+            color: var(--text-muted);
+            margin-bottom: 3px
+        }
+
+        .stat-value {
+            font-size: 1.38rem;
+            font-weight: 750;
+            font-variant-numeric: tabular-nums
+        }
+
+        .report-card {
+            border-radius: var(--radius-xl);
+            padding: 20px
+        }
+
+        .report-toolbar {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: end;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+
+        .field {
+            display: grid;
+            gap: 7px
+        }
+
+        .field label {
+            font-size: .7rem;
+            color: var(--text-muted);
+            font-weight: 600
+        }
+
+        .date-input {
+            height: 46px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: rgba(2, 10, 18, .55);
+            color: var(--text);
+            padding: 0 13px;
+            outline: none;
+            min-width: 180px;
+            color-scheme: dark
+        }
+
+        .date-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(101, 210, 220, .08)
+        }
+
+        .table-note {
+            color: var(--text-muted);
+            font-size: .72rem
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: rgba(2, 9, 16, .31)
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 760px
+        }
+
+        th, td {
+            height: 60px;
+            padding: 0 18px;
+            text-align: right;
+            border-bottom: 1px solid rgba(154, 181, 209, .1);
+            font-size: .78rem
+        }
+
+        th {
+            height: 51px;
+            color: var(--text-muted);
+            font-size: .69rem;
+            font-weight: 650;
+            background: rgba(255, 255, 255, .025);
+            white-space: nowrap
+        }
+
+        td {
+            color: var(--text-secondary)
+        }
+
+        tbody tr {
+            transition: background .18s
+        }
+
+        tbody tr:hover {
+            background: rgba(101, 210, 220, .035)
+        }
+
+        tbody tr:last-child td {
+            border: 0
+        }
+
+        .index-cell {
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums
+        }
+
+        .person {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            color: var(--text);
+            font-weight: 600
+        }
+
+        .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 11px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(145deg, rgba(101, 210, 220, .18), rgba(101, 210, 220, .06));
+            border: 1px solid rgba(101, 210, 220, .14);
+            color: var(--primary);
+            font-size: .72rem
+        }
+
+        .badge {
+            min-width: 65px;
+            height: 28px;
+            padding: 0 10px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: .69rem;
+            font-weight: 650
+        }
+
+        .badge:before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor
+        }
+
+        .badge.present {
+            background: var(--success-soft);
+            color: var(--success)
+        }
+
+        .badge.exit {
+            background: var(--danger-soft);
+            color: var(--danger)
+        }
+
+        .confidence {
+            display: flex;
+            align-items: center;
+            gap: 9px
+        }
+
+        .confidence-track {
+            width: 64px;
+            height: 4px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, .08);
+            overflow: hidden
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--primary-strong), var(--primary))
+        }
+
+        .state-panel {
+            min-height: 265px;
+            display: none;
+            place-items: center;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted)
+        }
+
+        .state-panel.show {
+            display: grid
+        }
+
+        .state-icon {
+            width: 62px;
+            height: 62px;
+            border-radius: 20px;
+            display: grid;
+            place-items: center;
+            background: var(--primary-soft);
+            color: var(--primary);
+            margin: 0 auto 14px
+        }
+
+        .state-icon svg {
+            width: 28px
+        }
+
+        .state-panel strong {
+            display: block;
+            color: var(--text-secondary);
+            font-size: .88rem;
+            margin-bottom: 6px
+        }
+
+        .state-panel p {
+            font-size: .73rem;
+            line-height: 1.8
+        }
+
+        .loader-ring {
+            width: 32px;
+            height: 32px;
+            border: 2px solid rgba(255, 255, 255, .1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            margin: 0 auto 13px
+        }
+
+        .logout-mobile {
+            display: none
+        }
+
+        @media (max-width: 1040px) {
+            .stats-grid {
+                grid-template-columns:repeat(2, 1fr)
+            }
+        }
+
+        @media (max-width: 700px) {
+            .report-main {
+                padding-top: 20px
+            }
+
+            .page-heading {
+                align-items: start
+            }
+
+            .page-heading > .btn {
+                display: none
+            }
+
+            .stats-grid {
+                grid-template-columns:1fr 1fr;
+                gap: 9px
+            }
+
+            .stat-card {
+                padding: 14px;
+                gap: 10px
+            }
+
+            .stat-icon {
+                width: 38px;
+                height: 38px
+            }
+
+            .stat-value {
+                font-size: 1.08rem
+            }
+
+            .report-card {
+                padding: 10px;
+                border-radius: 22px
+            }
+
+            .report-toolbar {
+                align-items: stretch;
+                flex-direction: column;
+                padding: 8px
+            }
+
+            .filter-group {
+                display: grid;
+                grid-template-columns:1fr 1fr
+            }
+
+            .field {
+                grid-column: 1/-1
+            }
+
+            .date-input {
+                width: 100%
+            }
+
+            .filter-group .btn {
+                padding: 0 12px
+            }
+
+            .table-note {
+                display: none
+            }
+
+            .table-wrap {
+                border-radius: 14px;
+                border: 0;
+                background: transparent;
+                overflow: visible
+            }
+
+            table, thead, tbody, tr, td {
+                display: block;
+                min-width: 0
+            }
+
+            thead {
+                display: none
+            }
+
+            tbody {
+                display: grid;
+                gap: 9px
+            }
+
+            tbody tr {
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                background: rgba(255, 255, 255, .028);
+                padding: 13px 14px;
+                display: grid;
+                grid-template-columns:1fr auto;
+                gap: 10px
+            }
+
+            td {
+                height: auto;
+                padding: 0;
+                border: 0;
+                font-size: .75rem
+            }
+
+            td:nth-child(1) {
+                display: none
+            }
+
+            td:nth-child(2) {
+                grid-column: 1/2
+            }
+
+            td:nth-child(5) {
+                grid-column: 2/3;
+                grid-row: 1
+            }
+
+            td:nth-child(3), td:nth-child(4), td:nth-child(6) {
+                color: var(--text-muted)
+            }
+
+            td:nth-child(3):before {
+                content: "تاریخ: ";
+                color: var(--text-secondary)
+            }
+
+            td:nth-child(4):before {
+                content: "ساعت: ";
+                color: var(--text-secondary)
+            }
+
+            td:nth-child(6) {
+                grid-column: 2/3;
+                grid-row: 2/4;
+                align-self: end
+            }
+
+            .confidence-track {
+                display: none
+            }
+
+            .logout-mobile {
+                display: inline-flex
+            }
+
+            .header-actions .secure-pill {
+                display: none
+            }
+
+            .header-actions .btn span {
+                display: none
+            }
+
+            .header-actions .btn {
+                width: 44px;
+                padding: 0
+            }
+        }
+    </style>
+</head>
+<body class="report-page">
+<header class="shell app-header"><a class="brand" href="/"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"
+                                                                                         stroke="currentColor"
+                                                                                         stroke-width="1.8"><path
+        d="M8 3H6a3 3 0 0 0-3 3v2m13-5h2a3 3 0 0 1 3 3v2M8 21H6a3 3 0 0 1-3-3v-2m13 5h2a3 3 0 0 0 3-3v-2"/><path
+        d="M8.5 10a3.5 3.5 0 0 1 7 0M7 17c.8-2 2.6-3 5-3s4.2 1 5 3"/></svg></span><span><span class="brand-title">حضور هوشمند</span><span
+        class="brand-kicker">مرکز گزارش و پایش تردد</span></span></a>
+    <div class="header-actions"><span class="secure-pill"><span class="status-dot"></span>دسترسی مدیریت فعال</span><a
+            class="btn btn-ghost" href="/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="m9 18 6-6-6-6"/>
+        </svg>
+        <span>ثبت تردد</span></a><a class="btn btn-ghost icon-btn logout-mobile" href="/logout" aria-label="خروج">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M10 17l5-5-5-5M15 12H3"/>
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+        </svg>
+    </a></div>
+</header>
+<main class="shell report-main">
+    <section class="page-heading reveal">
+        <div>
+            <div class="eyebrow">نمای مدیریتی</div>
+            <h1 class="section-title">گزارش حضور و غیاب</h1>
+            <p class="page-meta" id="page-meta">در حال آماده‌سازی آخرین اطلاعات تردد…</p></div>
+        <a class="btn btn-ghost" href="/logout">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M10 17l5-5-5-5M15 12H3"/>
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            </svg>
+            خروج امن</a></section>
+    <section class="stats-grid reveal delay-1">
+        <article class="stat-card glass"><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                                      stroke="currentColor" stroke-width="1.8"><path
+                d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path
+                d="M19 8v6m3-3h-6"/></svg></span>
+            <div>
+                <div class="stat-label">کل رکوردها</div>
+                <div class="stat-value" id="stat-total">—</div>
+            </div>
+        </article>
+        <article class="stat-card glass"><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                                      stroke="currentColor" stroke-width="1.8"><path
+                d="m8 12 3 3 5-6"/><circle cx="12" cy="12" r="9"/></svg></span>
+            <div>
+                <div class="stat-label">ورود ثبت‌شده</div>
+                <div class="stat-value" id="stat-in">—</div>
+            </div>
+        </article>
+        <article class="stat-card glass"><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                                      stroke="currentColor" stroke-width="1.8"><path
+                d="m10 17 5-5-5-5M15 12H3"/><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></svg></span>
+            <div>
+                <div class="stat-label">خروج ثبت‌شده</div>
+                <div class="stat-value" id="stat-out">—</div>
+            </div>
+        </article>
+        <article class="stat-card glass"><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                                      stroke="currentColor" stroke-width="1.8"><path
+                d="M4 19V9m5 10V5m6 14v-7m5 7V3"/></svg></span>
+            <div>
+                <div class="stat-label">میانگین اطمینان</div>
+                <div class="stat-value" id="stat-confidence">—</div>
+            </div>
+        </article>
+    </section>
+    <section class="report-card glass reveal delay-2">
+        <div class="report-toolbar">
+            <div class="filter-group">
+                <div class="field"><label for="date-filter">بازه نمایش گزارش</label><input class="date-input"
+                                                                                           type="date" id="date-filter">
+                </div>
+                <button class="btn btn-primary" id="filter-btn" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M4 5h16M7 12h10m-7 7h4"/>
+                    </svg>
+                    اعمال فیلتر
+                </button>
+                <button class="btn btn-ghost" id="all-btn" type="button">نمایش همه</button>
+            </div>
+            <span class="table-note">اطلاعات به‌ترتیب آخرین ثبت نمایش داده می‌شود.</span></div>
+        <div class="table-wrap">
+            <div id="loading" class="state-panel show">
+                <div>
+                    <div class="loader-ring"></div>
+                    <strong>در حال دریافت اطلاعات</strong>
+                    <p>چند لحظه منتظر بمانید…</p></div>
+            </div>
+            <div id="empty" class="state-panel">
+                <div><span class="state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                   stroke-width="1.7"><path d="M8 2v4m8-4v4M3 10h18"/><rect x="3" y="4"
+                                                                                                            width="18"
+                                                                                                            height="18"
+                                                                                                            rx="3"/><path
+                        d="M8 15h8"/></svg></span><strong>رکوردی برای این بازه وجود ندارد</strong>
+                    <p>تاریخ دیگری را انتخاب کنید یا همه رکوردها را ببینید.</p></div>
+            </div>
+            <div id="error" class="state-panel">
+                <div><span class="state-icon" style="color:var(--danger);background:var(--danger-soft)">!</span><strong>دریافت
+                    گزارش ناموفق بود</strong>
+                    <p>ارتباط با سرور را بررسی و دوباره تلاش کنید.</p>
+                    <button class="btn btn-ghost" type="button" id="retry-btn" style="margin-top:14px">تلاش دوباره
+                    </button>
+                </div>
+            </div>
+            <table id="report-table" hidden>
+                <thead>
+                <tr>
+                    <th>ردیف</th>
+                    <th>نام کارمند</th>
+                    <th>تاریخ</th>
+                    <th>ساعت ثبت</th>
+                    <th>نوع تردد</th>
+                    <th>اطمینان تشخیص</th>
+                </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+    </section>
+</main>
+<script>
+    const $ = id => document.getElementById(id), dateInput = $('date-filter');
+    dateInput.value = new Date().toISOString().slice(0, 10);
+    $('filter-btn').addEventListener('click', loadRecords);
+    $('all-btn').addEventListener('click', () => {
+        dateInput.value = '';
+        loadRecords()
+    });
+    $('retry-btn').addEventListener('click', loadRecords);
+
+    function faNum(value) {
+        return Number(value).toLocaleString('fa-IR')
+    }
+
+    function initials(name) {
+        const parts = String(name || '؟').trim().split(/\s+/);
+        return parts.slice(0, 2).map(p => p[0]).join('').toUpperCase()
+    }
+
+    function esc(value) {
+        const d = document.createElement('div');
+        d.textContent = value == null ? '' : String(value);
+        return d.innerHTML
+    }
+
+    async function loadRecords() {
+        showState('loading');
+        const url = dateInput.value ? `/api/records?date=${encodeURIComponent(dateInput.value)}` : '/api/records';
+        try {
+            const res = await fetch(url, {headers: {Accept: 'application/json'}});
+            if (!res.ok) throw new Error('request failed');
+            const data = await res.json();
+            render(data.records || [])
+        } catch (e) {
+            showState('error');
+            $('page-meta').textContent = 'به‌روزرسانی اطلاعات با خطا مواجه شد.'
+        }
+    }
+
+    function showState(state) {
+        ['loading', 'empty', 'error'].forEach(id => $(id).classList.toggle('show', id === state));
+        $('report-table').hidden = !!state
+    }
+
+    function render(records) {
+        const ins = records.filter(r => r.check_type === 'in'), outs = records.filter(r => r.check_type !== 'in'),
+            valid = records.map(r => Number(r.confidence)).filter(Number.isFinite),
+            avg = valid.length ? valid.reduce((a, b) => a + b, 0) / valid.length : 0;
+        $('stat-total').textContent = faNum(records.length);
+        $('stat-in').textContent = faNum(ins.length);
+        $('stat-out').textContent = faNum(outs.length);
+        $('stat-confidence').textContent = valid.length ? `${faNum((avg * 100).toFixed(1))}٪` : '—';
+        $('page-meta').textContent = dateInput.value ? `نمایش رکوردهای تاریخ ${new Date(dateInput.value + 'T00:00:00').toLocaleDateString('fa-IR')}` : `نمایش همه رکوردهای ثبت‌شده`;
+        if (!records.length) {
+            showState('empty');
+            return
+        }
+        const tbody = $('table-body');
+        tbody.innerHTML = records.map((r, i) => {
+            const isIn = r.check_type === 'in', conf = Number(r.confidence),
+                pct = Number.isFinite(conf) ? (conf * 100).toFixed(1) : null;
+            return `<tr><td class="index-cell">${faNum(i + 1)}</td><td><div class="person"><span class="avatar">${esc(initials(r.name))}</span><span>${esc(r.name || 'نامشخص')}</span></div></td><td>${esc(r.date || '—')}</td><td>${esc(r.time || '—')}</td><td><span class="badge ${isIn ? 'present' : 'exit'}">${isIn ? 'ورود' : 'خروج'}</span></td><td><div class="confidence"><span>${pct ? faNum(pct) + '٪' : '—'}</span>${pct ? `<span class="confidence-track"><i class="confidence-fill" style="width:${Math.min(100, Math.max(0, pct))}%"></i></span>` : ''}</div></td></tr>`
+        }).join('');
+        showState(null)
+    }
+
+    loadRecords();
+</script>
+</body>
+</html>

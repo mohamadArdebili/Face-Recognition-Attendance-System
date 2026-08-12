@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#07111f">
+    <title>ورود امن | حضور هوشمند</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    <style>
+        .login-page {
+            display: grid;
+            grid-template-columns:minmax(360px, 42%) 1fr;
+            min-height: 100vh
+        }
+
+        .login-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: rgba(4, 10, 18, .58);
+            border-left: 1px solid var(--border);
+            position: relative;
+            z-index: 2
+        }
+
+        .login-wrap {
+            width: min(420px, 100%)
+        }
+
+        .login-brand {
+            margin-bottom: 58px
+        }
+
+        .login-card {
+            border-radius: var(--radius-xl);
+            padding: 34px
+        }
+
+        .login-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            color: var(--primary);
+            background: var(--primary-soft);
+            border: 1px solid rgba(101, 210, 220, .17);
+            margin-bottom: 22px
+        }
+
+        .login-icon svg {
+            width: 27px
+        }
+
+        .login-card .section-title {
+            font-size: 1.65rem;
+            margin-bottom: 8px
+        }
+
+        .login-card .section-description {
+            margin-bottom: 28px
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 15px
+        }
+
+        .field label {
+            font-size: .78rem;
+            color: var(--text-secondary);
+            font-weight: 600
+        }
+
+        .input-wrap {
+            position: relative
+        }
+
+        .input-wrap input {
+            width: 100%;
+            height: 52px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: rgba(2, 10, 18, .62);
+            color: var(--text);
+            padding: 0 15px 0 52px;
+            outline: none;
+            transition: border .2s, box-shadow .2s
+        }
+
+        .input-wrap input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(101, 210, 220, .09)
+        }
+
+        .toggle-password {
+            position: absolute;
+            left: 5px;
+            top: 4px;
+            width: 44px;
+            height: 44px;
+            border: 0;
+            background: transparent;
+            color: var(--text-muted);
+            display: grid;
+            place-items: center;
+            border-radius: 10px
+        }
+
+        .toggle-password:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, .05)
+        }
+
+        .toggle-password svg {
+            width: 19px
+        }
+
+        .error-msg {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 12px 14px;
+            margin-bottom: 15px;
+            border-radius: 13px;
+            color: #ffc0c6;
+            background: var(--danger-soft);
+            border: 1px solid rgba(255, 126, 140, .24);
+            font-size: .79rem;
+            line-height: 1.7
+        }
+
+        .error-icon {
+            width: 21px;
+            height: 21px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: rgba(255, 126, 140, .16);
+            flex: 0 0 auto;
+            font-weight: 700
+        }
+
+        .submit {
+            width: 100%;
+            margin-top: 6px
+        }
+
+        .back-link {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: .78rem;
+            transition: color .2s
+        }
+
+        .back-link:hover {
+            color: var(--primary)
+        }
+
+        .back-link svg {
+            width: 16px
+        }
+
+        .visual-panel {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 60px
+        }
+
+        .visual-panel:before, .visual-panel:after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(1px)
+        }
+
+        .visual-panel:before {
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, rgba(51, 185, 199, .18), transparent 68%);
+            top: 5%;
+            left: 12%
+        }
+
+        .visual-panel:after {
+            width: 330px;
+            height: 330px;
+            background: radial-gradient(circle, rgba(213, 180, 111, .1), transparent 68%);
+            bottom: 4%;
+            right: 8%
+        }
+
+        .visual-content {
+            width: min(640px, 100%);
+            position: relative;
+            z-index: 1
+        }
+
+        .visual-copy {
+            max-width: 520px;
+            margin-bottom: 42px
+        }
+
+        .visual-copy .section-title {
+            font-size: clamp(2.1rem, 4vw, 3.7rem);
+            margin: 16px 0;
+            line-height: 1.3
+        }
+
+        .gold {
+            color: var(--gold)
+        }
+
+        .security-visual {
+            height: 310px;
+            border-radius: 32px;
+            position: relative;
+            display: grid;
+            place-items: center;
+            overflow: hidden
+        }
+
+        .security-visual:before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(101, 210, 220, .045) 1px, transparent 1px), linear-gradient(90deg, rgba(101, 210, 220, .045) 1px, transparent 1px);
+            background-size: 30px 30px
+        }
+
+        .face-grid {
+            width: 180px;
+            height: 215px;
+            border: 1px solid rgba(101, 210, 220, .35);
+            border-radius: 50% 50% 42% 42%;
+            position: relative;
+            box-shadow: 0 0 50px rgba(101, 210, 220, .08)
+        }
+
+        .face-grid:before {
+            content: "";
+            position: absolute;
+            width: 58%;
+            height: 31%;
+            border: 1px solid rgba(101, 210, 220, .38);
+            border-width: 0 1px;
+            top: 37%;
+            left: 21%;
+            border-radius: 50%
+        }
+
+        .face-grid:after {
+            content: "";
+            position: absolute;
+            width: 40%;
+            height: 22%;
+            border-bottom: 1px solid rgba(101, 210, 220, .38);
+            bottom: 17%;
+            left: 30%;
+            border-radius: 50%
+        }
+
+        .corner {
+            position: absolute;
+            width: 38px;
+            height: 38px;
+            border-color: var(--primary);
+            border-style: solid
+        }
+
+        .c1 {
+            top: 30px;
+            right: 30px;
+            border-width: 1px 1px 0 0
+        }
+
+        .c2 {
+            top: 30px;
+            left: 30px;
+            border-width: 1px 0 0 1px
+        }
+
+        .c3 {
+            bottom: 30px;
+            right: 30px;
+            border-width: 0 1px 1px 0
+        }
+
+        .c4 {
+            bottom: 30px;
+            left: 30px;
+            border-width: 0 0 1px 1px
+        }
+
+        .security-note {
+            position: absolute;
+            bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: .7rem;
+            color: var(--text-secondary)
+        }
+
+        @media (max-width: 900px) {
+            .login-page {
+                grid-template-columns:1fr
+            }
+
+            .visual-panel {
+                display: none
+            }
+
+            .login-panel {
+                border: 0;
+                padding: 24px
+            }
+
+            .login-brand {
+                margin-bottom: 36px
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-panel {
+                align-items: flex-start;
+                padding-top: 24px
+            }
+
+            .login-card {
+                padding: 25px 20px;
+                border-radius: 23px
+            }
+        }
+    </style>
+</head>
+<body>
+<main class="login-page">
+    <section class="login-panel">
+        <div class="login-wrap reveal"><a class="brand login-brand" href="/"><span class="brand-mark"><svg
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path
+                d="M8 3H6a3 3 0 0 0-3 3v2m13-5h2a3 3 0 0 1 3 3v2M8 21H6a3 3 0 0 1-3-3v-2m13 5h2a3 3 0 0 0 3-3v-2"/><path
+                d="M8.5 10a3.5 3.5 0 0 1 7 0M7 17c.8-2 2.6-3 5-3s4.2 1 5 3"/></svg></span><span><span
+                class="brand-title">حضور هوشمند</span><span class="brand-kicker">پنل امن مدیریت</span></span></a>
+            <div class="login-card glass"><span class="login-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="1.8"><rect
+                    x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg></span>
+                <h1 class="section-title">ورود به پنل گزارش‌ها</h1>
+                <p class="section-description">برای دسترسی به اطلاعات تردد، رمز عبور مدیریت را وارد کنید.</p>
+                {% if error %}
+                    <div class="error-msg" role="alert"><span class="error-icon">!</span><span>{{ error }}</span>
+                    </div>{% endif %}
+                <form method="post" id="login-form">
+                    <div class="field"><label for="password">رمز عبور</label>
+                        <div class="input-wrap"><input type="password" id="password" name="password"
+                                                       placeholder="رمز عبور خود را وارد کنید" required autofocus
+                                                       autocomplete="current-password" aria-describedby="password-help">
+                            <button class="toggle-password" type="button" id="toggle-password"
+                                    aria-label="نمایش رمز عبور">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/>
+                                    <circle cx="12" cy="12" r="2.5"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <span id="password-help" class="sr-only">رمز عبور پنل مدیریت</span></div>
+                    <button class="btn btn-primary submit" type="submit" id="submit-btn">ورود امن به پنل</button>
+                </form>
+            </div>
+            <a class="back-link" href="/">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m9 18 6-6-6-6"/>
+                </svg>
+                بازگشت به ثبت تردد</a></div>
+    </section>
+    <section class="visual-panel" aria-hidden="true">
+        <div class="visual-content reveal delay-1">
+            <div class="visual-copy">
+                <div class="eyebrow">مدیریت داده‌محور تردد</div>
+                <h2 class="section-title">کنترل دقیق حضور،<br><span class="gold">با هویت بیومتریک</span></h2>
+                <p class="section-description">دسترسی یکپارچه و امن به گزارش‌های حضور و غیاب سازمان، در یک نمای مدیریتی
+                    شفاف.</p></div>
+            <div class="security-visual glass">
+                <div class="face-grid"></div>
+                <i class="corner c1"></i><i class="corner c2"></i><i class="corner c3"></i><i class="corner c4"></i>
+                <div class="security-note"><span class="status-dot"></span>کانال ارتباطی امن و محافظت‌شده</div>
+            </div>
+        </div>
+    </section>
+</main>
+<script>const input = document.getElementById('password'), toggle = document.getElementById('toggle-password'),
+    form = document.getElementById('login-form'), submit = document.getElementById('submit-btn');
+toggle.addEventListener('click', () => {
+    const visible = input.type === 'text';
+    input.type = visible ? 'password' : 'text';
+    toggle.setAttribute('aria-label', visible ? 'نمایش رمز عبور' : 'پنهان‌کردن رمز عبور')
+});
+form.addEventListener('submit', () => {
+    submit.disabled = true;
+    submit.textContent = 'در حال بررسی…'
+})</script>
+</body>
+</html>
