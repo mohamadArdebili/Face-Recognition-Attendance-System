@@ -133,12 +133,191 @@
             padding: 0 13px;
             outline: none;
             min-width: 180px;
-            color-scheme: dark
+            font: inherit
         }
 
         .date-input:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(101, 210, 220, .08)
+        }
+
+        .jalali-date-picker {
+            position: relative
+        }
+
+        .report-page .jalali-date-trigger {
+            width: 220px;
+            max-width: 100%;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            text-align: right;
+            font-family: 'Vazirmatn Local', Vazirmatn, Tahoma, sans-serif;
+            font-size: .76rem;
+            font-weight: 500;
+            line-height: 1.4
+        }
+
+        #jalali-date-display {
+            display: block;
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .report-page .jalali-date-trigger svg {
+            width: 18px;
+            height: 18px;
+            flex: 0 0 auto;
+            color: var(--primary)
+        }
+
+        .report-page .jalali-date-trigger[aria-expanded="true"] {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(101, 210, 220, .08)
+        }
+
+        .jalali-date-placeholder {
+            color: var(--text-muted)
+        }
+
+        .jalali-calendar {
+            position: absolute;
+            z-index: 50;
+            top: calc(100% + 9px);
+            right: 0;
+            width: 310px;
+            padding: 14px;
+            border: 1px solid rgba(101, 210, 220, .2);
+            border-radius: 18px;
+            background: rgba(7, 17, 31, .98);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .06);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px)
+        }
+
+        .jalali-calendar[hidden] {
+            display: none
+        }
+
+        .jalali-calendar-header {
+            display: grid;
+            grid-template-columns:38px 1fr 38px;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 13px
+        }
+
+        .jalali-month-title {
+            text-align: center;
+            font-size: .86rem;
+            font-weight: 700;
+            color: var(--text)
+        }
+
+        .jalali-nav {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, .035);
+            transition: color .18s, border-color .18s, background .18s
+        }
+
+        .jalali-nav:hover {
+            color: var(--primary);
+            border-color: rgba(101, 210, 220, .32);
+            background: var(--primary-soft)
+        }
+
+        .jalali-nav svg {
+            width: 17px;
+            height: 17px
+        }
+
+        .jalali-weekdays,
+        .jalali-days {
+            display: grid;
+            grid-template-columns:repeat(7, 1fr);
+            gap: 4px
+        }
+
+        .jalali-weekdays {
+            margin-bottom: 6px
+        }
+
+        .jalali-weekdays span {
+            height: 27px;
+            display: grid;
+            place-items: center;
+            color: var(--text-muted);
+            font-size: .65rem;
+            font-weight: 650
+        }
+
+        .jalali-day {
+            height: 35px;
+            border: 0;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            background: transparent;
+            font: inherit;
+            font-size: .74rem;
+            transition: color .16s, background .16s, box-shadow .16s
+        }
+
+        .jalali-day:hover {
+            color: var(--text);
+            background: rgba(101, 210, 220, .1)
+        }
+
+        .jalali-day.is-today {
+            color: var(--primary);
+            box-shadow: inset 0 0 0 1px rgba(101, 210, 220, .38)
+        }
+
+        .jalali-day.is-selected {
+            color: #041116;
+            font-weight: 800;
+            background: linear-gradient(145deg, #96ecf1, #3bb8c6);
+            box-shadow: 0 7px 18px rgba(57, 190, 204, .22)
+        }
+
+        .jalali-day-empty {
+            height: 35px
+        }
+
+        .jalali-calendar-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding-top: 11px;
+            margin-top: 9px;
+            border-top: 1px solid var(--border)
+        }
+
+        .jalali-calendar-action {
+            border: 0;
+            padding: 6px 8px;
+            color: var(--primary);
+            background: transparent;
+            font: inherit;
+            font-size: .7rem;
+            font-weight: 650
+        }
+
+        .jalali-calendar-action:hover {
+            color: var(--text)
         }
 
         .table-note {
@@ -384,6 +563,17 @@
                 width: 100%
             }
 
+            .jalali-date-picker,
+            .jalali-date-trigger {
+                width: 100%;
+                min-width: 0
+            }
+
+            .jalali-calendar {
+                width: min(310px, calc(100vw - 40px));
+                right: 0
+            }
+
             .filter-group .btn {
                 padding: 0 12px
             }
@@ -493,7 +683,7 @@
         d="M8 3H6a3 3 0 0 0-3 3v2m13-5h2a3 3 0 0 1 3 3v2M8 21H6a3 3 0 0 1-3-3v-2m13 5h2a3 3 0 0 0 3-3v-2"/><path
         d="M8.5 10a3.5 3.5 0 0 1 7 0M7 17c.8-2 2.6-3 5-3s4.2 1 5 3"/></svg></span><span><span class="brand-title">حضور هوشمند</span><span
         class="brand-kicker">مرکز گزارش و پایش تردد</span></span></a>
-    <div class="header-actions"><span class="secure-pill"><span class="status-dot"></span>دسترسی مدیریت فعال</span><a
+    <div class="header-actions"><span class="secure-pill"><span class="status-dot"></span>دسترسی مدیریت: فعال</span><a
             class="btn btn-ghost" href="/">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="m9 18 6-6-6-6"/>
@@ -508,7 +698,7 @@
 <main class="shell report-main">
     <section class="page-heading reveal">
         <div>
-            <div class="eyebrow">نمای مدیریتی</div>
+            <div class="eyebrow">پنل مدیریت</div>
             <h1 class="section-title">گزارش حضور و غیاب</h1>
             <p class="page-meta" id="page-meta">در حال آماده‌سازی آخرین اطلاعات تردد…</p></div>
         <a class="btn btn-ghost" href="/logout">
@@ -516,7 +706,7 @@
                 <path d="M10 17l5-5-5-5M15 12H3"/>
                 <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
             </svg>
-            خروج امن</a></section>
+            خروج</a></section>
     <section class="stats-grid reveal delay-1">
         <article class="stat-card glass"><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none"
                                                                       stroke="currentColor" stroke-width="1.8"><path
@@ -531,7 +721,7 @@
                                                                       stroke="currentColor" stroke-width="1.8"><path
                 d="m8 12 3 3 5-6"/><circle cx="12" cy="12" r="9"/></svg></span>
             <div>
-                <div class="stat-label">ورود ثبت‌شده</div>
+                <div class="stat-label">ورود ثبت‌ شده</div>
                 <div class="stat-value" id="stat-in">—</div>
             </div>
         </article>
@@ -539,7 +729,7 @@
                                                                       stroke="currentColor" stroke-width="1.8"><path
                 d="m10 17 5-5-5-5M15 12H3"/><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></svg></span>
             <div>
-                <div class="stat-label">خروج ثبت‌شده</div>
+                <div class="stat-label">خروج ثبت‌ شده</div>
                 <div class="stat-value" id="stat-out">—</div>
             </div>
         </article>
@@ -547,7 +737,7 @@
                                                                       stroke="currentColor" stroke-width="1.8"><path
                 d="M4 19V9m5 10V5m6 14v-7m5 7V3"/></svg></span>
             <div>
-                <div class="stat-label">میانگین اطمینان</div>
+                <div class="stat-label">میانگین درصد تطابق</div>
                 <div class="stat-value" id="stat-confidence">—</div>
             </div>
         </article>
@@ -555,8 +745,44 @@
     <section class="report-card glass reveal delay-2">
         <div class="report-toolbar">
             <div class="filter-group">
-                <div class="field"><label for="date-filter">بازه نمایش گزارش</label><input class="date-input"
-                                                                                           type="date" id="date-filter">
+                <div class="field">
+                    <label for="date-filter">بازه نمایش گزارش</label>
+                    <div class="jalali-date-picker" id="jalali-date-picker">
+                        <button class="date-input jalali-date-trigger" type="button" id="date-filter"
+                                aria-haspopup="dialog" aria-expanded="false" aria-controls="jalali-calendar">
+                            <span id="jalali-date-display">انتخاب تاریخ شمسی</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                 aria-hidden="true">
+                                <path d="M8 2v4m8-4v4M3 10h18"/>
+                                <rect x="3" y="4" width="18" height="18" rx="3"/>
+                            </svg>
+                        </button>
+                        <input type="hidden" id="date-filter-value">
+                        <div class="jalali-calendar" id="jalali-calendar" role="dialog"
+                             aria-label="انتخاب تاریخ شمسی" hidden>
+                            <div class="jalali-calendar-header">
+                                <button class="jalali-nav" id="jalali-prev-month" type="button"
+                                        aria-label="ماه قبل">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                         aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                                </button>
+                                <div class="jalali-month-title" id="jalali-month-title"></div>
+                                <button class="jalali-nav" id="jalali-next-month" type="button"
+                                        aria-label="ماه بعد">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                         aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                                </button>
+                            </div>
+                            <div class="jalali-weekdays" aria-hidden="true">
+                                <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span>
+                            </div>
+                            <div class="jalali-days" id="jalali-days"></div>
+                            <div class="jalali-calendar-footer">
+                                <button class="jalali-calendar-action" id="jalali-today" type="button">امروز</button>
+                                <button class="jalali-calendar-action" id="jalali-clear" type="button">پاک‌کردن</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <button class="btn btn-primary" id="filter-btn" type="button">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -566,7 +792,7 @@
                 </button>
                 <button class="btn btn-ghost" id="all-btn" type="button">نمایش همه</button>
             </div>
-            <span class="table-note">اطلاعات به‌ترتیب آخرین ثبت نمایش داده می‌شود.</span></div>
+            <span class="table-note">اطلاعات به‌ ترتیب آخرین ثبت نمایش داده می‌شود.</span></div>
         <div class="table-wrap">
             <div id="loading" class="state-panel show">
                 <div>
@@ -599,7 +825,7 @@
                     <th>تاریخ</th>
                     <th>ساعت ثبت</th>
                     <th>نوع تردد</th>
-                    <th>اطمینان تشخیص</th>
+                    <th>درصد تطابق</th>
                 </tr>
                 </thead>
                 <tbody id="table-body"></tbody>
@@ -608,11 +834,199 @@
     </section>
 </main>
 <script>
-    const $ = id => document.getElementById(id), dateInput = $('date-filter');
-    dateInput.value = new Date().toISOString().slice(0, 10);
+    const $ = id => document.getElementById(id), dateTrigger = $('date-filter'),
+        dateInput = $('date-filter-value'), dateDisplay = $('jalali-date-display'),
+        jalaliCalendar = $('jalali-calendar'), jalaliDays = $('jalali-days');
+
+    const jalaliMonthNames = [
+        'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+        'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+    ];
+    const jalaliPartsFormatter = new Intl.DateTimeFormat('en-US-u-ca-persian', {
+        year: 'numeric', month: 'numeric', day: 'numeric'
+    });
+    const jalaliNumberFormatter = new Intl.NumberFormat('fa-IR', {
+        useGrouping: false
+    });
+    const gregorianDateCache = new Map();
+    const today = new Date();
+    today.setHours(12, 0, 0, 0);
+    let selectedGregorian = today;
+    let {year: viewJalaliYear, month: viewJalaliMonth} = toJalali(today);
+
+    function toJalali(date) {
+        const values = {};
+        jalaliPartsFormatter.formatToParts(date).forEach(part => {
+            if (part.type === 'year' || part.type === 'month' || part.type === 'day') {
+                values[part.type] = Number(part.value)
+            }
+        });
+        return values
+    }
+
+    function sameJalaliDate(date, year, month, day) {
+        const value = toJalali(date);
+        return value.year === year && value.month === month && value.day === day
+    }
+
+    function jalaliToGregorian(year, month, day) {
+        const key = `${year}-${month}-${day}`;
+        if (gregorianDateCache.has(key)) return new Date(gregorianDateCache.get(key));
+
+        const cursor = new Date(year + 621, 0, 1, 12);
+        for (let index = 0; index < 460; index += 1) {
+            if (sameJalaliDate(cursor, year, month, day)) {
+                const result = new Date(cursor);
+                gregorianDateCache.set(key, result.getTime());
+                return result
+            }
+            cursor.setDate(cursor.getDate() + 1)
+        }
+        return null
+    }
+
+    function jalaliMonthLength(year, month) {
+        if (month <= 6) return 31;
+        if (month <= 11) return 30;
+        return jalaliToGregorian(year, 12, 30) ? 30 : 29
+    }
+
+    function toGregorianISO(date) {
+        const pad = value => String(value).padStart(2, '0');
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+    }
+
+    function dateFromISO(value) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return null;
+        const [year, month, day] = value.split('-').map(Number);
+        const date = new Date(year, month - 1, day, 12);
+        return Number.isNaN(date.getTime()) ? null : date
+    }
+
+    function formatJalaliDate(date) {
+        const {year, month, day} = toJalali(date);
+        return `${jalaliNumberFormatter.format(day)} ${jalaliMonthNames[month - 1]} ${jalaliNumberFormatter.format(year)}`
+    }
+
+    function formatJalaliISO(value) {
+        const date = dateFromISO(value);
+        return date ? formatJalaliDate(date) : '—'
+    }
+
+    function updateDateDisplay() {
+        if (!selectedGregorian) {
+            dateDisplay.textContent = 'انتخاب تاریخ شمسی';
+            dateDisplay.classList.add('jalali-date-placeholder');
+            return
+        }
+        dateDisplay.textContent = formatJalaliDate(selectedGregorian);
+        dateDisplay.classList.remove('jalali-date-placeholder')
+    }
+
+    function renderJalaliCalendar() {
+        $('jalali-month-title').textContent = `${jalaliMonthNames[viewJalaliMonth - 1]} ${jalaliNumberFormatter.format(viewJalaliYear)}`;
+        const firstGregorian = jalaliToGregorian(viewJalaliYear, viewJalaliMonth, 1);
+        if (!firstGregorian) {
+            jalaliDays.innerHTML = '';
+            return
+        }
+
+        const firstWeekday = (firstGregorian.getDay() + 1) % 7;
+        const daysInMonth = jalaliMonthLength(viewJalaliYear, viewJalaliMonth);
+        const selectedISO = selectedGregorian ? toGregorianISO(selectedGregorian) : '';
+        const todayISO = toGregorianISO(today);
+        const cells = [];
+
+        for (let index = 0; index < firstWeekday; index += 1) {
+            cells.push('<span class="jalali-day-empty" aria-hidden="true"></span>')
+        }
+
+        for (let day = 1; day <= daysInMonth; day += 1) {
+            const gregorian = new Date(firstGregorian);
+            gregorian.setDate(firstGregorian.getDate() + day - 1);
+            const iso = toGregorianISO(gregorian);
+            const classes = [
+                'jalali-day',
+                iso === todayISO ? 'is-today' : '',
+                iso === selectedISO ? 'is-selected' : ''
+            ].filter(Boolean).join(' ');
+            const ariaCurrent = iso === todayISO ? ' aria-current="date"' : '';
+            const ariaSelected = iso === selectedISO ? ' aria-selected="true"' : ' aria-selected="false"';
+            cells.push(`<button class="${classes}" type="button" role="gridcell" data-date="${iso}"${ariaCurrent}${ariaSelected} aria-label="${esc(formatJalaliDate(gregorian))}">${faNum(day)}</button>`)
+        }
+
+        jalaliDays.innerHTML = cells.join('')
+    }
+
+    function openJalaliCalendar() {
+        jalaliCalendar.hidden = false;
+        dateTrigger.setAttribute('aria-expanded', 'true');
+        renderJalaliCalendar()
+    }
+
+    function closeJalaliCalendar() {
+        jalaliCalendar.hidden = true;
+        dateTrigger.setAttribute('aria-expanded', 'false')
+    }
+
+    function setSelectedDate(date) {
+        selectedGregorian = date ? new Date(date) : null;
+        dateInput.value = selectedGregorian ? toGregorianISO(selectedGregorian) : '';
+        if (selectedGregorian) {
+            const jalali = toJalali(selectedGregorian);
+            viewJalaliYear = jalali.year;
+            viewJalaliMonth = jalali.month
+        }
+        updateDateDisplay();
+        renderJalaliCalendar()
+    }
+
+    function moveJalaliMonth(offset) {
+        viewJalaliMonth += offset;
+        if (viewJalaliMonth > 12) {
+            viewJalaliMonth = 1;
+            viewJalaliYear += 1
+        } else if (viewJalaliMonth < 1) {
+            viewJalaliMonth = 12;
+            viewJalaliYear -= 1
+        }
+        renderJalaliCalendar()
+    }
+
+    setSelectedDate(today);
+    dateTrigger.addEventListener('click', () => {
+        if (jalaliCalendar.hidden) openJalaliCalendar(); else closeJalaliCalendar()
+    });
+    $('jalali-prev-month').addEventListener('click', () => moveJalaliMonth(-1));
+    $('jalali-next-month').addEventListener('click', () => moveJalaliMonth(1));
+    $('jalali-today').addEventListener('click', () => {
+        setSelectedDate(today);
+        closeJalaliCalendar()
+    });
+    $('jalali-clear').addEventListener('click', () => {
+        setSelectedDate(null);
+        closeJalaliCalendar()
+    });
+    jalaliDays.addEventListener('click', event => {
+        const dayButton = event.target.closest('[data-date]');
+        if (!dayButton) return;
+        setSelectedDate(dateFromISO(dayButton.dataset.date));
+        closeJalaliCalendar();
+        dateTrigger.focus()
+    });
+    document.addEventListener('click', event => {
+        if (!$('jalali-date-picker').contains(event.target)) closeJalaliCalendar()
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !jalaliCalendar.hidden) {
+            closeJalaliCalendar();
+            dateTrigger.focus()
+        }
+    });
+
     $('filter-btn').addEventListener('click', loadRecords);
     $('all-btn').addEventListener('click', () => {
-        dateInput.value = '';
+        setSelectedDate(null);
         loadRecords()
     });
     $('retry-btn').addEventListener('click', loadRecords);
@@ -659,7 +1073,7 @@
         $('stat-in').textContent = faNum(ins.length);
         $('stat-out').textContent = faNum(outs.length);
         $('stat-confidence').textContent = valid.length ? `${faNum((avg * 100).toFixed(1))}٪` : '—';
-        $('page-meta').textContent = dateInput.value ? `نمایش رکوردهای تاریخ ${new Date(dateInput.value + 'T00:00:00').toLocaleDateString('fa-IR')}` : `نمایش همه رکوردهای ثبت‌شده`;
+        $('page-meta').textContent = dateInput.value ? `نمایش رکوردهای تاریخ ${formatJalaliISO(dateInput.value)}` : `نمایش همه رکوردهای ثبت‌ شده`;
         if (!records.length) {
             showState('empty');
             return
@@ -668,7 +1082,8 @@
         tbody.innerHTML = records.map((r, i) => {
             const isIn = r.check_type === 'in', conf = Number(r.confidence),
                 pct = Number.isFinite(conf) ? (conf * 100).toFixed(1) : null;
-            return `<tr><td class="index-cell">${faNum(i + 1)}</td><td><div class="person"><span class="avatar">${esc(initials(r.name))}</span><span>${esc(r.name || 'نامشخص')}</span></div></td><td>${esc(r.date || '—')}</td><td>${esc(r.time || '—')}</td><td><span class="badge ${isIn ? 'present' : 'exit'}">${isIn ? 'ورود' : 'خروج'}</span></td><td><div class="confidence"><span>${pct ? faNum(pct) + '٪' : '—'}</span>${pct ? `<span class="confidence-track"><i class="confidence-fill" style="width:${Math.min(100, Math.max(0, pct))}%"></i></span>` : ''}</div></td></tr>`
+            return `<tr><td class="index-cell">${faNum(i + 1)}</td><td><div class="person"><span class="avatar">${esc(initials(r.name))}</span><span>${esc(r.name || 'نامشخص')}</span></div></td><td>${r.date ? esc(formatJalaliISO(r.date)) : '—'}</td>
+<td>${esc(r.time || '—')}</td><td><span class="badge ${isIn ? 'present' : 'exit'}">${isIn ? 'ورود' : 'خروج'}</span></td><td><div class="confidence"><span>${pct ? faNum(pct) + '٪' : '—'}</span>${pct ? `<span class="confidence-track"><i class="confidence-fill" style="width:${Math.min(100, Math.max(0, pct))}%"></i></span>` : ''}</div></td></tr>`
         }).join('');
         showState(null)
     }

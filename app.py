@@ -14,7 +14,8 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "Xk9#mP2$qL7@nR4!vT6")
 
-REPORT_PASSWORD = os.environ.get("REPORT_PASSWORD", "")
+# admin panel password
+REPORT_PASSWORD = os.environ.get("REPORT_PASSWORD", "Demora@1404")
 
 logger = get_logger()
 recognizer = FaceRecognizer(
