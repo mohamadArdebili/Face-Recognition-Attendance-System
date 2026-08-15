@@ -1,397 +1,358 @@
 # Face Recognition Attendance System
 
-A lightweight, production-ready face recognition attendance system optimized for low-end hardware (Windows 7, 2GB RAM, old CPU, no GPU).
+A browser-based employee attendance system that uses face recognition to record check-ins and check-outs. The application provides a Persian (RTL) attendance interface, live webcam capture, an authenticated reporting dashboard, and support for SQLite or PostgreSQL.
 
 ## Features
 
-- **Lightweight**: Optimized for old hardware using HOG detection only
-- **User-friendly**: Simple Tkinter GUI with CHECK IN/OUT buttons
-- **Automatic**: Recognizes employees and saves attendance automatically
-- **Database**: SQLite database for attendance records
-- **Logging**: Comprehensive logging system
-- **Configurable**: Easy configuration without code changes
-- **Portable**: Complete self-contained project with dataset included
-- **Extensible**: Add new employees without modifying code
+- Browser-based webcam capture
+- Face detection and recognition with `face_recognition` and dlib
+- Check-in and check-out registration
+- Recognition confidence display
+- Password-protected administration dashboard
+- Attendance filtering by date with a Jalali calendar
+- Responsive Persian (RTL) user interface
+- SQLite database for local use
+- Optional PostgreSQL database for hosted deployments
+- Incremental face-encoding generation
+- CSV export utility for SQLite records
+- Application and recognition event logging
 
-## System Requirements
+## Technology Stack
 
-- Windows 7 or higher
-- 2GB RAM minimum
-- Python 3.7 - 3.9 (Python 3.10+ may have dlib compatibility issues)
-- USB Webcam
-- Internet connection (for initial installation only)
+- Python 3
+- Flask and Gunicorn
+- OpenCV
+- face_recognition
+- dlib
+- NumPy
+- SQLite or PostgreSQL
+- HTML, CSS, and JavaScript
+
+## How It Works
+
+1. The user opens the attendance page and enables the browser camera.
+2. The user selects check-in or check-out.
+3. The browser captures one frame and sends it to the Flask application.
+4. The server compares the first detected face with the stored encodings.
+5. If a match is found, the attendance event is saved with its date, time, confidence score, and camera ID.
+6. Authorized administrators can review records from the reporting dashboard.
+
+Captured frames are processed for recognition and are not saved by the application.
 
 ## Project Structure
 
+```text
+.
+├── app.py                         # Flask application and routes
+├── build_embeddings.py            # Builds face encodings from the dataset
+├── config.py                      # Application and recognition settings
+├── export_attendance.py           # Interactive CSV export utility
+├── system_check.py                # Local environment checks
+├── requirements.txt               # Python dependencies
+├── run.sh                         # Linux/macOS development launcher
+├── run_app.bat                    # Windows launcher
+├── wsgi.py                        # WSGI entry point
+├── dataset/
+│   └── Employee Name/             # Reference photos for one employee
+├── data/
+│   ├── faces.pkl                  # Generated face encodings
+│   └── attendance.db              # Local SQLite database
+├── logs/
+│   └── attendance.log             # Runtime logs
+├── src/
+│   ├── database.py                # SQLite/PostgreSQL operations
+│   ├── face_recognition_module.py # Face matching logic
+│   ├── logger.py                  # Logging configuration
+│   └── utils.py                   # Validation and export helpers
+├── static/                        # Stylesheets and local assets
+└── templates/
+    ├── index.html                 # Attendance interface
+    ├── login.html                 # Administrator login
+    └── report.html                # Attendance reports
 ```
-FaceAttendanceSystem/
-├── app.py                          # Main application
-├── build_embeddings.py              # Build face encodings
-├── config.py                        # Configuration file
-├── requirements.txt                 # Python dependencies
-├── README.md                        # This file
-├── src/                            # Source modules
-│   ├── attendance_manager.py       # Attendance session manager
-│   ├── camera.py                   # Camera handling
-│   ├── database.py                 # SQLite database operations
-│   ├── face_recognition_module.py  # Face recognition logic
-│   ├── logger.py                   # Logging setup
-│   ├── ui.py                       # Tkinter UI
-│   └── utils.py                    # Utility functions
-├── dataset/                        # Employee photos (INCLUDED)
-│   ├── Ali/                        # 34 photos
-│   ├── Amirreza/                   # 30 photos
-│   ├── Benyamin/                   # 30 photos
-│   ├── Hamidreza/                  # 34 photos
-│   ├── Kian/                       # 30 photos
-│   ├── Mahdi/                      # 36 photos
-│   ├── Mohammad/                   # 32 photos
-│   └── Mojtaba/                    # 31 photos
-├── data/                           # Data directory
-│   ├── faces.pkl                   # Face encodings (auto-generated)
-│   └── attendance.db               # Attendance database (auto-generated)
-└── logs/                           # Log files
-    └── attendance.log              # Application logs (auto-generated)
+
+Runtime data, face images, encodings, logs, secrets, and exports are excluded from Git by the included `.gitignore`.
+
+## Requirements
+
+- Python 3.10 is recommended
+- A webcam
+- A modern browser with camera support
+- CMake and a C/C++ build toolchain if a prebuilt dlib wheel is unavailable
+
+For remote access, browsers normally require HTTPS before allowing webcam access. Camera access works on `localhost` during local development.
+
+### Common system dependencies
+
+On Debian or Ubuntu, the following packages may be required before installing the Python dependencies:
+
+```bash
+sudo apt update
+sudo apt install build-essential cmake libopenblas-dev liblapack-dev
 ```
+
+On Windows, install CMake and Microsoft Visual C++ Build Tools if dlib cannot be installed from a wheel.
 
 ## Installation
 
-### Step 1: Install Python
-
-Download and install Python 3.7, 3.8, or 3.9 from https://www.python.org/downloads/
-
-**Important**: During installation, check "Add Python to PATH"
-
-### Step 2: Install Visual C++ Build Tools (Required for dlib)
-
-Download and install:
-- Microsoft Visual C++ 14.0 or greater
-- Get it from: https://visualstudio.microsoft.com/visual-cpp-build-tools/
-- Install "Desktop development with C++" workload
-
-### Step 3: Install CMake (Required for dlib)
-
-Download and install CMake from: https://cmake.org/download/
-
-Add CMake to system PATH during installation.
-
-### Step 4: Install Python Dependencies
-
-Open Command Prompt and navigate to project directory:
+Clone the repository and enter the project directory:
 
 ```bash
-cd FaceAttendanceSystem
+git clone <repository-url>
+cd face_attendance-premium
 ```
 
-Install dependencies:
+Create and activate a virtual environment:
 
 ```bash
+python -m venv venv
+```
+
+Linux or macOS:
+
+```bash
+source venv/bin/activate
+```
+
+Windows Command Prompt:
+
+```bat
+venv\Scripts\activate
+```
+
+Install the dependencies:
+
+```bash
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-**Note**: Installation may take 10-30 minutes on old hardware, especially for dlib.
+## Configuration
 
-If dlib installation fails, try:
-```bash
-pip install dlib-binary
+Create a `.env` file in the project root:
+
+```dotenv
+SECRET_KEY=replace-with-a-long-random-value
+REPORT_PASSWORD=replace-with-a-strong-admin-password
+
 ```
 
-## Quick Start
+To use PostgreSQL, set `DATABASE_URL` in the process environment before starting the application:
 
-### Step 1: Build Face Encodings
+```bash
+export DATABASE_URL="postgresql://username:password@hostname:5432/database_name"
+python app.py
+```
 
-The dataset with 8 employees is already included in the project.
+When `DATABASE_URL` is omitted, the application uses the local SQLite database.
 
-Build face encodings:
+Always set a unique `SECRET_KEY` and `REPORT_PASSWORD` before exposing the application to other users. The fallback values in `app.py` are intended only for development and are not secure for deployment.
+
+Recognition, camera, UI, path, and logging settings can be changed in `config.py`.
+
+Important recognition options include:
+
+```python
+RECOGNITION_MODEL = "hog"
+RECOGNITION_TOLERANCE = 0.6
+FACE_DETECTION_UPSAMPLE = 0
+CAMERA_ID = 0
+```
+
+A lower tolerance makes matching stricter. Test any change against representative photos before using it in production.
+
+## Add Employees and Build Encodings
+
+Create one directory per employee under `dataset/`. The directory name becomes the employee name stored in attendance records.
+
+```text
+dataset/
+├── Alice Smith/
+│   ├── photo-1.jpg
+│   ├── photo-2.jpg
+│   └── photo-3.jpg
+└── Bob Jones/
+    ├── photo-1.jpg
+    └── photo-2.jpg
+```
+
+Supported image formats are JPG, JPEG, PNG, and BMP. Use clear, well-lit images containing one front-facing person.
+
+Build the face encodings:
 
 ```bash
 python build_embeddings.py
 ```
 
-Or double-click: `build_encodings.bat`
+This creates `data/faces.pkl`. The builder works incrementally:
 
-This will:
-- Process all 8 employees (257 photos total)
-- Create face encodings
-- Save to `data/faces.pkl`
+- New employee directories are encoded.
+- Encodings for deleted employee directories are removed.
+- Existing employees are skipped if they are already present.
 
-### Step 2: Run Application
+If you replace or add photos for an already encoded employee, remove that employee's existing encodings or rebuild `data/faces.pkl` from scratch so the changed photos are processed.
+
+## Run Locally
+
+Start the Flask development server:
 
 ```bash
 python app.py
 ```
 
-Or double-click: `run_app.bat`
+Open:
 
-## Dataset Information
-
-### Current Employees (8 total)
-
-The project includes photos for 8 employees:
-
-1. **Ali** - 34 photos
-2. **Amirreza** - 30 photos
-3. **Benyamin** - 30 photos
-4. **Hamidreza** - 34 photos
-5. **Kian** - 30 photos
-6. **Mahdi** - 36 photos
-7. **Mohammad** - 32 photos
-8. **Mojtaba** - 31 photos
-
-**Total**: 257 photos across 8 employees
-
-### Dataset Location
-
-```
-FaceAttendanceSystem/dataset/
+```text
+http://127.0.0.1:5000
 ```
 
-All employee photos are included inside the project folder, making it completely portable.
+The main attendance page is at `/`. The administration dashboard is at `/report` and redirects unauthenticated users to `/login`.
 
-## Adding New Employees
+Linux and macOS users can also run:
 
-To add a new employee:
+```bash
+./run.sh
+```
 
-1. Create a new folder in `dataset/` with the employee's name:
-   ```
-   dataset/New_Employee_Name/
-   ```
+Windows users can run:
 
-2. Add 3-5 clear photos (JPG, PNG, or BMP)
-
-3. Rebuild encodings:
-   ```bash
-   python build_embeddings.py
-   ```
-
-4. Done! No code changes needed.
+```bat
+run_app.bat
+```
 
 ## Usage
 
-### Main Window
+### Record attendance
 
-The main window displays:
-- Organization name
-- Current date and time
-- **CHECK IN** button (green)
-- **CHECK OUT** button (red)
-- **EXIT** button (gray)
+1. Open the home page.
+2. Select the camera button.
+3. Allow camera access in the browser.
+4. Keep one face centered and clearly visible.
+5. Select **Check In** or **Check Out** in the Persian interface.
+6. Wait for the recognition result.
 
-### Workflow
+### View reports
 
-1. Operator selects **CHECK IN** or **CHECK OUT**
-2. Webcam opens automatically
-3. Employee stands 50-120 cm from camera
-4. System recognizes face automatically (2-5 seconds)
-5. Attendance is saved to database
-6. Success message displays employee name, time, and confidence
-7. Webcam closes automatically
-8. Returns to main menu
-
-### Recognition Window
-
-Shows:
-- Live webcam feed
-- Face detection rectangle (green = recognized, red = unknown)
-- Employee name and confidence percentage
-- FPS counter
-- Remaining time countdown
-- Instructions
-
-Press **Q** or **ESC** to cancel recognition.
-
-## Configuration
-
-Edit `config.py` to customize settings:
-
-### Camera Settings
-
-```python
-CAMERA_ID = 0               # Camera device ID (0 = default)
-CAMERA_WIDTH = 640          # Preferred resolution width
-CAMERA_HEIGHT = 480         # Preferred resolution height
-FALLBACK_WIDTH = 320        # Fallback resolution width
-FALLBACK_HEIGHT = 240       # Fallback resolution height
-```
-
-### Recognition Settings
-
-```python
-RECOGNITION_MODEL = "hog"           # Detection model (use "hog" only)
-RECOGNITION_TOLERANCE = 0.6         # Lower = stricter (0.0 - 1.0)
-FACE_DETECTION_UPSAMPLE = 0         # Upsample times (0 = fastest)
-FRAME_SKIP = 2                      # Process every Nth frame
-```
-
-### Timeout Settings
-
-```python
-RECOGNITION_TIMEOUT = 15    # Timeout in seconds
-```
+1. Open `/report`.
+2. Enter the password configured by `REPORT_PASSWORD`.
+3. Select a date from the Jalali calendar to review its records.
+4. Review check-in totals, check-out totals, and average recognition confidence.
 
 ## Database
 
-### Database Location
+The application automatically creates the `attendance` table.
 
-```
+When `DATABASE_URL` is not set, records are stored in:
+
+```text
 data/attendance.db
 ```
 
-### Table Structure
+When `DATABASE_URL` is set, the application connects to PostgreSQL instead.
 
-```sql
-CREATE TABLE attendance (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    employee_id TEXT NOT NULL,
-    employee_name TEXT NOT NULL,
-    check_type TEXT NOT NULL,
-    date TEXT NOT NULL,
-    time TEXT NOT NULL,
-    confidence REAL NOT NULL,
-    camera_id INTEGER NOT NULL,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-```
+Each record contains:
 
-### Viewing Records
+- Employee ID
+- Employee name
+- Check type (`in` or `out`)
+- Date
+- Time
+- Recognition confidence
+- Camera ID
+- Creation timestamp
 
-Use any SQLite viewer or command:
+Dates and times are generated from the application server's local clock.
 
-```bash
-sqlite3 data/attendance.db "SELECT * FROM attendance ORDER BY timestamp DESC LIMIT 10;"
-```
+## Export Attendance Records
 
-## Utility Scripts
-
-### System Check
-
-Verify system requirements and configuration:
-
-```bash
-python system_check.py
-```
-
-Or double-click: `system_check.bat`
-
-### Export Attendance
-
-Export attendance records to CSV:
+For a local SQLite database, run:
 
 ```bash
 python export_attendance.py
 ```
 
-Or double-click: `export_attendance.bat`
+The interactive utility can export today's records, the current week, the current month, all records, or a custom date range to CSV.
 
-Options:
-- Export today's records
-- Export this week's records
-- Export this month's records
-- Export all records
-- Export custom date range
-- View today's summary
+The current export utility reads SQLite directly and does not use `DATABASE_URL`. PostgreSQL deployments should export records with PostgreSQL-compatible tools or extend the utility.
 
-## Logs
+## Production Deployment
 
-### Log Location
+Run the WSGI application with Gunicorn:
 
-```
-logs/attendance.log
+```bash
+gunicorn --bind 0.0.0.0:8000 --timeout 120 wsgi:application
 ```
 
-### Log Contents
+Use a reverse proxy with HTTPS, especially when clients access the camera from another device. Also ensure that:
 
-- Application startup/shutdown
-- Attendance records
-- Recognition events
-- Unknown face detections
-- Errors and warnings
-- Camera events
+- `SECRET_KEY` and `REPORT_PASSWORD` are provided through environment variables.
+- Persistent storage is configured for SQLite, encodings, and logs.
+- `DATABASE_URL` points to a persistent PostgreSQL service when PostgreSQL is used.
+- `data/faces.pkl` and the required employee encodings are present on the server.
+- Access to attendance records and biometric data is restricted.
 
-## Portable Deployment
+Each Gunicorn worker loads the face encodings into memory. Start with one worker on memory-constrained systems and scale only after measuring resource usage.
 
-This project is **completely self-contained**:
+## HTTP Endpoints
 
-✓ Dataset included inside project folder
-✓ All code and configuration included
-✓ No external dependencies on filesystem
-
-To deploy on another computer:
-
-1. Copy the entire `FaceAttendanceSystem` folder
-2. Install Python and dependencies
-3. Run `python build_embeddings.py` (to rebuild encodings)
-4. Run `python app.py`
-
-The project will work immediately without any path changes!
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/` | Attendance page |
+| `POST` | `/recognize` | Recognizes a submitted frame and records attendance |
+| `GET`, `POST` | `/login` | Administrator login |
+| `GET` | `/logout` | Clears the administrator session |
+| `GET` | `/report` | Protected reporting dashboard |
+| `GET` | `/api/records` | Protected JSON attendance records, optionally filtered by `date=YYYY-MM-DD` |
 
 ## Troubleshooting
 
-### Camera Not Opening
+### Face encodings were not found
 
-- Check USB connection
-- Try different `CAMERA_ID` in config.py (0, 1, 2...)
-- Close other applications using webcam
-- Restart computer
+Run:
 
-### No Face Encodings Found
-
-- Run `python build_embeddings.py` first
-- Check that dataset folder contains employee photos
-- Verify photos are in correct format (JPG, PNG, BMP)
-
-### Recognition Too Slow
-
-- Increase `FRAME_SKIP` in config.py (try 3 or 4)
-- Lower camera resolution to 320x240
-- Close other applications
-- Use HOG model only (already default)
-
-### Poor Recognition Accuracy
-
-- Add more photos per employee
-- Use better quality photos
-- Adjust `RECOGNITION_TOLERANCE` (try 0.5 for stricter)
-- Ensure good lighting during recognition
-- Clean camera lens
-
-### dlib Installation Failed
-
-Try installing pre-built wheel:
 ```bash
-pip install dlib-binary
+python build_embeddings.py
 ```
 
-Or download pre-compiled wheel from:
-https://github.com/sachadee/Dlib
+Confirm that `dataset/` contains at least one employee directory with valid images.
 
-## Performance Optimization
+### The browser cannot access the camera
 
-For old hardware:
+- Grant camera permission to the site.
+- Close other applications that are using the webcam.
+- Test with a current version of Chrome, Edge, or Firefox.
+- Use `localhost` for local development or HTTPS for remote access.
 
-1. **Frame Skip**: Increase `FRAME_SKIP` to 3 or 4
-2. **Resolution**: Use 320x240 resolution
-3. **Upsample**: Keep `FACE_DETECTION_UPSAMPLE = 0`
-4. **Model**: Use HOG only (never CNN)
-5. **Close Programs**: Close unnecessary applications
-6. **Startup Items**: Disable startup programs
+### A face is not recognized
+
+- Improve lighting and keep the face centered.
+- Use clear reference photos with different natural angles.
+- Confirm that the correct employee encoding exists.
+- Adjust `RECOGNITION_TOLERANCE` carefully.
+
+### dlib installation fails
+
+- Install CMake and the platform's C/C++ build tools.
+- Use a Python version for which a compatible dlib wheel is available.
+- Upgrade `pip`, `setuptools`, and `wheel`, then retry the installation.
+
+### Records do not appear in the report
+
+- Confirm that the selected report date matches the server's local date.
+- Check `logs/attendance.log`.
+- Verify the SQLite file permissions or the PostgreSQL connection string.
+
+## Privacy and Security
+
+Face encodings and attendance records are sensitive biometric and employment data. Before deployment:
+
+- Obtain any consent required in your jurisdiction.
+- Limit access to the dataset, encodings, database, backups, and logs.
+- Use HTTPS and strong credentials.
+- Define retention and deletion policies.
+- Do not commit `.env`, employee photos, databases, or generated encodings.
+- Review the system for applicable privacy, labor, and biometric-data requirements.
 
 ## License
 
-This project is provided as-is for internal use.
-
-## Credits
-
-Built with:
-- OpenCV: Computer vision library
-- face_recognition: Face recognition library
-- dlib: Machine learning toolkit
-- SQLite: Database engine
-- Tkinter: GUI framework
-
----
-
-**Version**: 1.0  
-**Last Updated**: 2024-06-13  
-**Optimized for**: Windows 7, 2GB RAM, Old Hardware  
-**Employees**: 8 (Ali, Amirreza, Benyamin, Hamidreza, Kian, Mahdi, Mohammad, Mojtaba)
+No open-source license is currently included. Unless a license is added, all rights are reserved by the project owner.
